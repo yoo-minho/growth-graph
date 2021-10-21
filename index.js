@@ -6,10 +6,10 @@ let list = [];
 list.push('blue');
 list.push('red');
 list.push('green');
-list.push('orange');
-list.push('black');
-list.push('tomato');
-list.push('cyan');
+// list.push('orange');
+// list.push('black');
+// list.push('tomato');
+// list.push('cyan');
 
 let rect = container.getBoundingClientRect();
 let full_value = 0;
@@ -71,15 +71,22 @@ let spent = 0; //흐른시간
 let start = performance.now();
 let hs;
 
-function setMax(){
-    let max = -1;
-    bar_list.forEach(bar => {
-        let cv = bar.value + bar.growth;
-        if (max < cv) {
-            max = cv;
-        }
-    })
-    full_value = max;
+function setMax(mode) {
+    mode = mode || "First is 100%";
+    if(mode === "First is 100%") {
+        full_value = bar_list.map(bar => bar.value + bar.growth).reduce((a, b) => {
+            if (a > b) return a;
+        })
+    } else if (mode === "Total Value Sum"){
+        full_value = bar_list.map(bar => bar.value)
+            .reduce((a, b) => a + b);
+    } else if (mode === "Best & Worst Sum"){
+        full_value = bar_list.map(bar => bar.value)
+            .filter((v, i) => (i === 0 || i === bar_list.length - 1))
+            .reduce((a, b) => a + b);
+    } else {
+        //pass
+    }
 }
 
 function tick() {
@@ -111,20 +118,18 @@ function tick() {
         bar.rank = idx;
     });
 
-    let div = 1;
     let fl = Math.floor((spent / limit) * 100);
-    if (fl % div === 0) {
-        if (hs !== fl) {
-            hs = fl;
-            bar_list.forEach(bar => {
-                if (fl === 0 || Math.random() < 0.5) {
-                    bar.growth = Math.round(Math.random() * 100);
-                    if (!bar.growth) {
-                        bar.growth = 1;
-                    }
+    if (hs !== fl) {
+        hs = fl;
+        bar_list.forEach(bar => {
+            if (fl === 0 || Math.random() < 0.5) {
+                bar.growth = Math.round(Math.random() * 100);
+                if (!bar.growth) {
+                    bar.growth = 1;
                 }
-            })
-        }
+            }
+        })
+        console.log(fl, fl%1)
     }
 
     if (spent < limit) {
@@ -134,6 +139,7 @@ function tick() {
 
 tick();
 
-
+//연도별 성장
+//연도별 값
 
 
