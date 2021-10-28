@@ -3,10 +3,18 @@ container.setAttribute('id', 'container');
 document.body.appendChild(container);
 
 let list = [
-    {name: 'red', color: 'red',},
-    {name: 'blue', color: 'blue',},
-    {name: 'green', color: 'green',},
+    {name: 'red', color: 'red'},
+    {name: 'blue', color: 'blue'},
+    {name: 'green', color: 'green'},
 ];
+
+let data = {
+    red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    blue: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    green: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+}
+
+
 // list.push('orange');
 // list.push('black');
 // list.push('tomato');
@@ -22,6 +30,7 @@ function makeBar({color, name}) {
         value: 0,
         rank: 0,
         growth: 0,
+        name: name,
     }
     let bar = document.createElement('div');
     bar.className = 'bar';
@@ -43,7 +52,13 @@ function makeBar({color, name}) {
     bar.appendChild(textLabel);
 
     let pointer = {
+        get name() {
+            return state.name;
+        },
         set value(val) {
+
+            console.log("full_value", full_value)
+
             state.value = val;
             let percent = (state.value / full_value) * 100;
             bar.style.width = `${percent}%`;
@@ -72,7 +87,7 @@ function makeBar({color, name}) {
 
 let bar_list = list.map(v => makeBar(v));
 
-let limit = 5000; //
+let limit = 1000 * 10; //5초
 let spent = 0; //흐른시간
 let start = performance.now();
 let hs;
@@ -85,7 +100,7 @@ function setMax(mode) {
     mode = mode || "First is 100%";
     if (mode === "First is 100%") {
         full_value = bar_list.map(bar => bar.value + bar.growth).reduce((a, b) => {
-            if (a > b) return a;
+            if (a >= b) return a;
         })
     } else if (mode === "Total Value Sum") {
         full_value = bar_list.map(bar => bar.value)
@@ -103,38 +118,28 @@ function tick() {
 
     let p = performance.now();
     let dt = p - start; //프레임 시간 차이
+
     start = p;
     spent += dt;
-    if (spent > limit) {
-        spent = limit
-    }
+    spent = spent > limit ? limit : spent
+
+    let fl = Math.floor((spent / limit) * 100);
 
     setMax();
 
-    bar_list.forEach(bar => {
-        bar.value += bar.growth;
-    });
+    bar_list = bar_list
+        .map(bar => Object.assign(bar, {value: bar.value + bar.growth}))
+        .sort((b1, b2) => b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0)
+        .map((bar, idx) => Object.assign(bar, {rank: idx}))
 
-    bar_list.sort(function (bar1, bar2) {
-        if (bar1.value > bar2.value) {
-            return -1;
-        } else if (bar1.value < bar2.value) {
-            return 1;
-        } else {
-            return 0;
-        }
-    })
-
-    bar_list.forEach((bar, idx) => {
-        bar.rank = idx;
-    });
-
-    let fl = Math.floor((spent / limit) * 100);
     if (hs !== fl) {
         hs = fl;
         bar_list.forEach(bar => {
             //bar.value = a[fl];
-            bar.growth = Math.round(Math.random() * 100);
+            //bar.growth = 100;
+            var rd = Math.round(Math.random() * 100);
+            console.log('rd', rd)
+            bar.growth = rd
         })
     }
 
