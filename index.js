@@ -133,6 +133,7 @@ function tick() {
     if (hs !== fl) {
         hs = fl;
         bar_list.forEach(bar => {
+            //bar.value = a[fl];
             bar.growth = Math.round(Math.random() * 100);
         })
     }
