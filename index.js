@@ -1,38 +1,38 @@
-let container = document.createElement('div');
-container.setAttribute('id', 'container');
-document.body.appendChild(container);
-
-let list = [
+const list = [
     {name: 'red', color: 'red'},
     {name: 'blue', color: 'blue'},
     {name: 'green', color: 'green'},
+    {name: 'orange', color: 'orange'},
+    {name: 'black', color: 'black'},
+    {name: 'tomato', color: 'tomato'},
+    {name: 'cyan', color: 'cyan'}
 ];
 
-let data = {
-    red: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    blue: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    green: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-}
+const container = document.createElement('div');
+container.setAttribute('id', 'container');
+document.body.appendChild(container);
 
+let FULL_VALUE = 0; //너비가 100%가 되는 값
+const bar_list = list.map(makeBar);
 
-// list.push('orange');
-// list.push('black');
-// list.push('tomato');
-// list.push('cyan');
+tick();
 
-let rect = container.getBoundingClientRect();
-let full_value = 0;
-let margin = 10;
+///////////////////////////////////////////////////////////
 
 function makeBar({color, name}) {
-    let height = (rect.height / list.length) - margin;
-    let state = {
+
+    const rect = container.getBoundingClientRect();
+    const margin = 10;
+
+    const height = (rect.height / list.length) - margin;
+    const state = {
         value: 0,
         rank: 0,
         growth: 0,
         name: name,
     }
-    let bar = document.createElement('div');
+
+    const bar = document.createElement('div');
     bar.className = 'bar';
     bar.style.left = '0';
     bar.style.borderRadius = `${height / 2}px`;
@@ -42,25 +42,22 @@ function makeBar({color, name}) {
     bar.style.background = color;
     container.appendChild(bar);
 
-    let numberLabel = document.createElement('div');
+    const numberLabel = document.createElement('div');
     numberLabel.className = 'number-label';
     bar.appendChild(numberLabel);
 
-    let textLabel = document.createElement('div');
+    const textLabel = document.createElement('div');
     textLabel.className = 'text-label';
     textLabel.textContent = name;
     bar.appendChild(textLabel);
 
-    let pointer = {
+    return {
         get name() {
             return state.name;
         },
         set value(val) {
-
-            console.log("full_value", full_value)
-
             state.value = val;
-            let percent = (state.value / full_value) * 100;
+            let percent = (state.value / FULL_VALUE) * 100;
             bar.style.width = `${percent}%`;
             numberLabel.textContent = state.value;
         },
@@ -81,76 +78,32 @@ function makeBar({color, name}) {
             return state.growth;
         },
     }
-    return pointer
-
 }
 
-let bar_list = list.map(v => makeBar(v));
+function tick(spentTimeMs = 0, start = performance.now(), prevPercent = 0) {
 
-let limit = 1000 * 10; //5초
-let spent = 0; //흐른시간
-let start = performance.now();
-let hs;
+    const totalTimeMs = 1000 * 10; //5초
 
-var a = [...Array(100).keys()];
-var b = a.map(v => v * 2);
-var c = a.map(v => v * 3);
+    const p = performance.now();
+    spentTimeMs += p - start; //프레임 시간 차이
 
-function setMax(mode) {
-    mode = mode || "First is 100%";
-    if (mode === "First is 100%") {
-        full_value = bar_list.map(bar => bar.value + bar.growth).reduce((a, b) => {
-            if (a >= b) return a;
-        })
-    } else if (mode === "Total Value Sum") {
-        full_value = bar_list.map(bar => bar.value)
-            .reduce((a, b) => a + b);
-    } else if (mode === "Best & Worst Sum") {
-        full_value = bar_list.map(bar => bar.value)
-            .filter((v, i) => (i === 0 || i === bar_list.length - 1))
-            .reduce((a, b) => a + b);
-    } else {
-        //pass
+    const currentPercent = Math.floor((spentTimeMs / totalTimeMs) * 100); //백분율 수치
+
+    FULL_VALUE = Math.max.apply(null, bar_list.map(bar => bar.value + bar.growth));
+
+    bar_list.forEach((bar, idx) => {
+        bar.value += bar.growth;
+        bar.rank = idx;
+        if (prevPercent === currentPercent) return;
+        bar.growth = Math.round(Math.random() * 100);
+    })
+
+    bar_list.sort((b1, b2) => {
+        return b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0
+    })
+
+    if (currentPercent < 100) {
+        requestAnimationFrame(() => tick(spentTimeMs, p, currentPercent));
     }
+
 }
-
-function tick() {
-
-    let p = performance.now();
-    let dt = p - start; //프레임 시간 차이
-
-    start = p;
-    spent += dt;
-    spent = spent > limit ? limit : spent
-
-    let fl = Math.floor((spent / limit) * 100);
-
-    setMax();
-
-    bar_list = bar_list.map(bar => Object.assign(bar, {value: bar.value + bar.growth}))
-    bar_list = bar_list.sort((b1, b2) => b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0)
-    bar_list = bar_list.map((bar, idx) => Object.assign(bar, {rank: idx}))
-
-    if (hs !== fl) {
-        hs = fl;
-        bar_list.forEach(bar => {
-            //bar.value = a[fl];
-            //bar.growth = 100;
-            var rd = Math.round(Math.random() * 100);
-            console.log('rd', rd)
-            bar.growth = rd
-        })
-    }
-
-    if (spent < limit) {
-        requestAnimationFrame(tick);
-    }
-}
-
-tick();
-
-
-//연도별 성장
-//연도별 값
-
-
