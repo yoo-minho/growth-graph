@@ -8,11 +8,7 @@ const list = [
     {name: 'cyan', color: 'cyan'}
 ];
 
-const container = document.createElement('div');
-container.setAttribute('id', 'container');
-document.body.appendChild(container);
-
-let FULL_VALUE = 0; //너비가 100%가 되는 값
+let FULL_VALUE = 0; //너비가 100%가 되는 값 - 리스트에 넣어 해결???
 const bar_list = list.map(makeBar);
 
 tick();
@@ -21,6 +17,7 @@ tick();
 
 function makeBar({color, name}) {
 
+    const container = document.getElementById("container");
     const rect = container.getBoundingClientRect();
     const margin = 10;
 
