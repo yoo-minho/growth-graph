@@ -127,10 +127,9 @@ function tick() {
 
     setMax();
 
-    bar_list = bar_list
-        .map(bar => Object.assign(bar, {value: bar.value + bar.growth}))
-        .sort((b1, b2) => b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0)
-        .map((bar, idx) => Object.assign(bar, {rank: idx}))
+    bar_list = bar_list.map(bar => Object.assign(bar, {value: bar.value + bar.growth}))
+    bar_list = bar_list.sort((b1, b2) => b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0)
+    bar_list = bar_list.map((bar, idx) => Object.assign(bar, {rank: idx}))
 
     if (hs !== fl) {
         hs = fl;
