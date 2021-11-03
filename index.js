@@ -11,7 +11,7 @@ const list = [
 let FULL_VALUE = 0; //너비가 100%가 되는 값 - 리스트에 넣어 해결???
 const bar_list = list.map(makeBar);
 
-tick();
+tick(0, 0, performance.now());
 
 ///////////////////////////////////////////////////////////
 
@@ -77,14 +77,14 @@ function makeBar({color, name}) {
     }
 }
 
-function tick(spentTimeMs = 0, start = performance.now(), prevPercent = 0) {
+function tick(spentTimeMs, prevPercent, start) {
 
     const totalTimeMs = 1000 * 10; //5초
 
     const p = performance.now();
     spentTimeMs += p - start; //프레임 시간 차이
 
-    const currentPercent = Math.floor((spentTimeMs / totalTimeMs) * 100); //백분율 수치
+    let currentPercent = Math.floor((spentTimeMs / totalTimeMs) * 100); //백분율 수치
 
     FULL_VALUE = Math.max.apply(null, bar_list.map(bar => bar.value + bar.growth));
 
