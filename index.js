@@ -1,21 +1,19 @@
 const list = [
-    {name: 'red', color: 'red'},
-    {name: 'blue', color: 'blue'},
-    {name: 'green', color: 'green'},
-    {name: 'orange', color: 'orange'},
-    {name: 'black', color: 'black'},
-    {name: 'tomato', color: 'tomato'},
-    {name: 'cyan', color: 'cyan'}
+    {name: 'red', color: 'red', growths: [1, 2, 3, 4, 5]},
+    {name: 'blue', color: 'blue', growths: [2, 2, 4, 4, 6]},
+    {name: 'green', color: 'green', growths: [2, 2, 3, 4, 5]},
+    {name: 'orange', color: 'orange', growths: [2, 2, 3, 4, 5]},
+    {name: 'black', color: 'black', growths: [2, 2, 3, 4, 5]},
+    {name: 'tomato', color: 'tomato', growths: [2, 2, 3, 4, 5]},
+    {name: 'cyan', color: 'cyan', growths: [2, 2, 3, 4, 5]}
 ];
 
-let FULL_VALUE = 0; //너비가 100%가 되는 값 - 리스트에 넣어 해결???
 const bar_list = list.map(makeBar);
-
 tick(0, 0, performance.now());
 
 ///////////////////////////////////////////////////////////
 
-function makeBar({color, name}) {
+function makeBar({color, name, growths}) {
 
     const container = document.getElementById("container");
     const rect = container.getBoundingClientRect();
@@ -25,7 +23,6 @@ function makeBar({color, name}) {
     const state = {
         value: 0,
         rank: 0,
-        growth: 0,
         name: name,
     }
 
@@ -41,6 +38,7 @@ function makeBar({color, name}) {
 
     const numberLabel = document.createElement('div');
     numberLabel.className = 'number-label';
+    numberLabel.textContent = '0';
     bar.appendChild(numberLabel);
 
     const textLabel = document.createElement('div');
@@ -49,13 +47,17 @@ function makeBar({color, name}) {
     bar.appendChild(textLabel);
 
     return {
+        get growths() {
+            return growths;
+        },
+        get el() {
+            return bar;
+        },
         get name() {
             return state.name;
         },
         set value(val) {
             state.value = val;
-            let percent = (state.value / FULL_VALUE) * 100;
-            bar.style.width = `${percent}%`;
             numberLabel.textContent = state.value;
         },
         get value() {
@@ -68,39 +70,54 @@ function makeBar({color, name}) {
         get rank() {
             return state.rank
         },
-        set growth(val) {
-            state.growth = val;
-        },
-        get growth() {
-            return state.growth;
-        },
     }
 }
 
-function tick(spentTimeMs, prevPercent, start) {
+function tick(spentTimeMs, prevPercent, prevTime) {
 
-    const totalTimeMs = 1000 * 10; //5초
+    const dataLength = list[0].growths.length;
+    const totalTimeMs = dataLength * 1000 // data 당 1초 ---5초
+    const base = 100 / dataLength;
 
-    const p = performance.now();
-    spentTimeMs += p - start; //프레임 시간 차이
+    const currentTime = performance.now();
+    spentTimeMs += currentTime - prevTime; //프레임 시간 차이
 
-    let currentPercent = Math.floor((spentTimeMs / totalTimeMs) * 100); //백분율 수치
+    const result = parseInt(Math.floor((spentTimeMs / totalTimeMs) * 100) / base); //몫
 
-    FULL_VALUE = Math.max.apply(null, bar_list.map(bar => bar.value + bar.growth));
+    if (result >= dataLength) return;
+
+    const currentPercent = result * base;
+
+    if (prevPercent < currentPercent) {
+        bar_list.forEach((bar, idx) => {
+            if (prevPercent === currentPercent) return;
+            bar.value += bar.growths[result];
+        })
+
+        const maxValue = Math.max.apply(null, bar_list.map(bar => bar.value));
+
+        bar_list.forEach((bar, idx) => {
+            bar.el.style.width = `${(bar.value / maxValue) * 100}%`;
+        })
+
+        bar_list.sort((b1, b2) => {
+            return b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0
+        })
+    }
 
     bar_list.forEach((bar, idx) => {
-        bar.value += bar.growth;
         bar.rank = idx;
-        if (prevPercent === currentPercent) return;
-        bar.growth = Math.round(Math.random() * 100);
     })
 
-    bar_list.sort((b1, b2) => {
-        return b1.value > b2.value ? -1 : b1.value < b2.value ? 1 : 0
-    })
-
-    if (currentPercent < 100) {
-        requestAnimationFrame(() => tick(spentTimeMs, p, currentPercent));
-    }
-
+    if (currentPercent > 100) return;
+    requestAnimationFrame(() => tick(spentTimeMs, currentPercent, currentTime));
 }
+
+/**
+ * 1. 누적값 : [1,2,3,4,5]
+ * 2. 성장값 : [1,1,1,1,1]
+ *
+ */
+
+
+
