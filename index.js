@@ -1,11 +1,11 @@
 const list = [
-    {name: 'red', color: 'red', growths: [1, 2, 3, 4, 5]},
-    {name: 'blue', color: 'blue', growths: [2, 2, 4, 4, 6]},
-    {name: 'green', color: 'green', growths: [2, 2, 3, 4, 5]},
-    {name: 'orange', color: 'orange', growths: [2, 2, 3, 4, 5]},
-    {name: 'black', color: 'black', growths: [2, 2, 3, 4, 5]},
-    {name: 'tomato', color: 'tomato', growths: [2, 2, 3, 4, 5]},
-    {name: 'cyan', color: 'cyan', growths: [2, 2, 3, 4, 5]}
+    {name: 'red', color: 'red', growths: [1, 2, 3, 4, 5, 1]},
+    {name: 'blue', color: 'blue', growths: [2, 2, 4, 4, 6, 2]},
+    {name: 'green', color: 'green', growths: [2, 2, 3, 4, 5, 3]},
+    {name: 'orange', color: 'orange', growths: [2, 2, 3, 4, 5, 4]},
+    {name: 'black', color: 'black', growths: [2, 2, 3, 4, 5, 5]},
+    {name: 'tomato', color: 'tomato', growths: [2, 2, 3, 4, 5, 6]},
+    {name: 'cyan', color: 'cyan', growths: [2, 2, 3, 4, 5, 7]}
 ];
 
 const bar_list = list.map(makeBar);
