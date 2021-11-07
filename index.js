@@ -209,7 +209,7 @@ function tick(spentTimeMs, prevPercent, prevTime) {
             }
         })
 
-        const maxValue = Math.max.apply(null, bar_list.map(bar => bar.value));
+        const maxValue = 100/*Math.max.apply(null, bar_list.map(bar => bar.value))*/;
 
         bar_list.forEach((bar, idx) => {
             bar.el.style.width = `${(bar.value / maxValue) * 100}%`;
