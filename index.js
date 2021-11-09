@@ -1,6 +1,7 @@
 import list from "./data/PremierLeague2021.js";
 
-const mode = "up"; //up,
+const mode = "bottom2top"; //bottom2top, down
+const isBottom2Top = mode === "bottom2top";
 const bar_list = list.map(makeBar);
 tick(0, 0, performance.now());
 
@@ -12,7 +13,7 @@ function makeBar({color, name, src, growths, values}) {
     const rect = container.getBoundingClientRect();
     const margin = 30;
 
-    const height = (rect.height / list.length) - margin;
+
     const state = {
         value: 0,
         rank: 0,
@@ -21,12 +22,25 @@ function makeBar({color, name, src, growths, values}) {
 
     const bar = document.createElement('div');
     bar.className = 'bar';
-    bar.style.left = '0';
-    bar.style.borderRadius = `${height / 2}px`;
-    bar.style.transition = 'top 1s';
-    bar.style.color = '#fff';
-    bar.style.height = `${height}px`;
     bar.style.background = color;
+    bar.style.color = '#fff';
+
+    let width, height;
+
+    if (isBottom2Top) {
+        width = (rect.width / list.length) - margin;
+        bar.style.bottom = '0';
+        bar.style.borderRadius = `${width / 2}px`;
+        bar.style.transition = 'left 1s';
+        bar.style.width = `${width}px`;
+    } else {
+        height = (rect.height / list.length) - margin;
+        bar.style.left = '0';
+        bar.style.borderRadius = `${height / 2}px`;
+        bar.style.transition = 'top 1s';
+        bar.style.height = `${height}px`;
+    }
+
     container.appendChild(bar);
 
     const numberLabel = document.createElement('div');
@@ -66,7 +80,11 @@ function makeBar({color, name, src, growths, values}) {
         },
         set rank(val) {
             state.rank = val;
-            bar.style.top = `${state.rank * (height + margin)}px`;
+            if(isBottom2Top){
+                bar.style.left = `${state.rank * (width + margin)}px`;
+            } else {
+                bar.style.top = `${state.rank * (height + margin)}px`;
+            }
         },
         get rank() {
             return state.rank
@@ -103,7 +121,11 @@ function tick(spentTimeMs, prevPercent, prevTime) {
         const maxValue = 100/*Math.max.apply(null, bar_list.map(bar => bar.value))*/;
 
         bar_list.forEach((bar, idx) => {
-            bar.el.style.width = `${(bar.value / maxValue) * 100}%`;
+            if(isBottom2Top){
+                bar.el.style.height = `${(bar.value / maxValue) * 100}%`;
+            } else {
+                bar.el.style.width = `${(bar.value / maxValue) * 100}%`;
+            }
         })
 
         bar_list.sort((b1, b2) => {
