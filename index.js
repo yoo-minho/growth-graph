@@ -1,5 +1,6 @@
 import list from "./data/PremierLeague2021.js";
 
+const mode = "up"; //up,
 const bar_list = list.map(makeBar);
 tick(0, 0, performance.now());
 
