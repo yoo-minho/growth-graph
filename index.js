@@ -13,7 +13,6 @@ function makeBar({color, name, src, growths, values}) {
     const rect = container.getBoundingClientRect();
     const margin = 30;
 
-
     const state = {
         value: 0,
         rank: 0,
@@ -33,6 +32,8 @@ function makeBar({color, name, src, growths, values}) {
         bar.style.borderRadius = `${width / 2}px`;
         bar.style.transition = 'left 1s';
         bar.style.width = `${width}px`;
+        bar.style.display = 'flex';
+        bar.style.justifyContent = 'center';
     } else {
         height = (rect.height / list.length) - margin;
         bar.style.left = '0';
@@ -72,6 +73,7 @@ function makeBar({color, name, src, growths, values}) {
             return state.name;
         },
         set value(val) {
+            console.log(state.name, val);
             state.value = val;
             numberLabel.textContent = state.value;
         },
@@ -103,6 +105,8 @@ function tick(spentTimeMs, prevPercent, prevTime) {
     spentTimeMs += currentTime - prevTime; //프레임 시간 차이
 
     const result = parseInt(Math.floor((spentTimeMs / totalTimeMs) * 100) / base); //몫
+
+    document.querySelector('#roundNumber').textContent = String(result);
 
     if (result >= dataLength) return;
 
