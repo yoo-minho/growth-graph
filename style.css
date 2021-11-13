@@ -6,7 +6,15 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: dimgray;
+    background: white;
+}
+
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: url(https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png)
 }
 
 #tag {
@@ -18,38 +26,29 @@ body {
 }
 
 #title {
-    color:white;
+    color: black;
     font-style: italic;
     font-size: 32px;
     font-weight: 600;
     line-height: 48px;
     margin-right: 12px;
-    /*position: absolute;*/
-    /*z-index: 1;*/
-    /*margin-left: 50px;*/
 }
 
 #container {
     position: absolute;
-    background: dimgray;
+    background: white;
     margin: 50px;
     width: calc(100% - 100px);
     height: calc(100% - 100px);
 }
 
-#round {
-    /*position: absolute;*/
-    /*right: 0;*/
-    /*z-index: 1;*/
-    /*margin: 50px;*/
-}
-
 .bar {
     position: absolute;
-    box-shadow: 0px 10px 13px -6px rgb(44 62 80);
+    box-shadow: 0 10px 13px -6px rgb(44 62 80);
 }
 
 .number-label {
+    color: black;
     text-align: center;
     font-weight: 600;
     position: absolute;
@@ -57,6 +56,7 @@ body {
 }
 
 .text-label {
+    color: black;
     font-weight: 600;
     bottom: -50px;
     position: absolute;
