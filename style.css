@@ -6,15 +6,14 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: white;
 }
 
 .back {
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 2;
-    background: url(https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png)
+    opacity: 0.2;
+    background: url(https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png) no-repeat;
 }
 
 #tag {
@@ -36,7 +35,6 @@ body {
 
 #container {
     position: absolute;
-    background: white;
     margin: 50px;
     width: calc(100% - 100px);
     height: calc(100% - 100px);
