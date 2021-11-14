@@ -27,7 +27,8 @@ function makeBar({color, name, src, growths, values}) {
     let width, height;
 
     if (isBottom2Top) {
-        width = (rect.width / list.length) - margin;
+        width = (924 / list.length) - margin;
+        //width = (rect.width / list.length) - margin;
         bar.style.bottom = '0';
         bar.style.borderRadius = `${width / 2}px`;
         bar.style.transition = 'left 1s';
@@ -82,7 +83,7 @@ function makeBar({color, name, src, growths, values}) {
         },
         set rank(val) {
             state.rank = val;
-            if(isBottom2Top){
+            if (isBottom2Top) {
                 bar.style.left = `${state.rank * (width + margin)}px`;
             } else {
                 bar.style.top = `${state.rank * (height + margin)}px`;
@@ -97,7 +98,7 @@ function makeBar({color, name, src, growths, values}) {
 function tick(spentTimeMs, prevPercent, prevTime) {
 
     const dataLength = list[0].growths ? list[0].growths.length : list[0].values.length;
-    const totalTimeMs = dataLength * 1000 // data 당 1초 ---5초
+    const totalTimeMs = dataLength * 2000 // data 당 1초 ---5초
     const base = 100 / dataLength;
 
     const isFirstTick = spentTimeMs === 0;
@@ -122,10 +123,10 @@ function tick(spentTimeMs, prevPercent, prevTime) {
             }
         })
 
-        const maxValue = 100/*Math.max.apply(null, bar_list.map(bar => bar.value))*/;
+        const maxValue = 3 * 38/*Math.max.apply(null, bar_list.map(bar => bar.value))*/;
 
         bar_list.forEach((bar, idx) => {
-            if(isBottom2Top){
+            if (isBottom2Top) {
                 bar.el.style.height = `${(bar.value / maxValue) * 100}%`;
             } else {
                 bar.el.style.width = `${(bar.value / maxValue) * 100}%`;
